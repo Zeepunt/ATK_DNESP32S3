@@ -15,13 +15,11 @@
 
 #include "esp_err.h"
 #include "esp_log.h"
-#include "esp_console.h"
 
-#define CMD_PROMPT "cmd>"
+#include "mod_console.h"
+#include "mod_fs.h"
 
 static const char *TAG = "main";
-
-static esp_console_repl_t *s_repl = NULL;
 
 void app_main(void)
 {
@@ -39,20 +37,8 @@ void app_main(void)
         }
     }
 
-    /* Console */
-    esp_console_repl_config_t repl_config = ESP_CONSOLE_REPL_CONFIG_DEFAULT();
-    repl_config.task_stack_size = 4 * 1024;
-    repl_config.prompt = CMD_PROMPT;
-
-    esp_console_dev_uart_config_t uart_config = ESP_CONSOLE_DEV_UART_CONFIG_DEFAULT();
-
-    err = esp_console_new_repl_uart(&uart_config, &repl_config, &s_repl);
-    if (err == ESP_OK) {
-        err = esp_console_start_repl(s_repl);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Console start repl failed: %s", esp_err_to_name(err));
-        }
-    }
+    mod_fs_init(MOD_FS_SPIFFS);
+    mod_console_init();
 
     // TODO application startup
     ESP_LOGI(TAG, "Application startup");

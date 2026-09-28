@@ -1,8 +1,21 @@
+set(module_inc
+    "modules/console"
+    "modules/fs"
+)
+
+set(module_src
+    "modules/console/mod_console.c"
+    "modules/console/cmd_os.c"
+    "modules/fs/mod_fs.c"
+)
+
 idf_component_register(
     SRCS
     "main.c"
+    ${module_src}
     INCLUDE_DIRS
     "."
+    ${module_inc}
 )
 
 partition_table_get_partition_info(partition_subtype "--partition-name fs" "subtype")
